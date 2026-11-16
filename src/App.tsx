@@ -253,7 +253,7 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
         </div>
       </div>
       <div className="event-venue-panel">
-        <h4>The Mittal Residence</h4>
+        <h4>{config.venue.name}</h4>
         <p className="event-closing-line">{event.supportingLine}</p>
       </div>
     </motion.article>
@@ -378,32 +378,36 @@ export default function App() {
           <div className="venue-content">
             <SectionHeading eyebrow="Where we gather">Our new home</SectionHeading>
             <MapPin className="venue-pin" />
-            <h3>Sangrur</h3>
+            <h3>{config.venue.name}</h3>
             <p>
               Street Adjoining Karuna Hospital
               <br />
               Patiala By Pass Road, Sangrur
             </p>
+            <figure className="venue-qr">
+              <a
+                className="venue-qr-link focus-ring"
+                href={config.venue.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${config.venue.name} in Google Maps`}
+              >
+                <span className="venue-qr-title">Scan for location</span>
+                <img
+                  src={`${import.meta.env.BASE_URL}assets/house-location-qr.svg`}
+                  alt={`Google Maps location QR code for ${config.venue.name}`}
+                  width={256}
+                  height={256}
+                  loading="lazy"
+                />
+              </a>
+              <figcaption>Scan with your camera, or tap the code to open Maps.</figcaption>
+            </figure>
             <a
-              className="venue-qr-link focus-ring"
+              className="button button-outline focus-ring venue-map-button"
               href={config.venue.mapUrl}
               target="_blank"
-              rel="noreferrer"
-              aria-label="Open the house location in Google Maps, or scan the location QR code"
-            >
-              <img
-                src={`${import.meta.env.BASE_URL}assets/house-location-qr.jpeg`}
-                alt="Scan for location: Google Maps QR code for Military Cantonment, Sangrur. Point your phone camera at the QR code."
-                width={1200}
-                height={1450}
-                loading="lazy"
-              />
-            </a>
-            <a
-              className="button button-outline focus-ring"
-              href={config.venue.mapUrl}
-              target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <MapPin /> Open in Google Maps
             </a>

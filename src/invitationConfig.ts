@@ -16,13 +16,14 @@ export type Celebration = {
 
 const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}`;
 const address = "Street Adjoining Karuna Hospital, Patiala By Pass Road, Sangrur";
-const venueMap = "https://maps.app.goo.gl/tSm1f48DQWFfHPrS7?g_st=aw";
+// Exact pin resolved from the host's original Maps link; opens in the app or browser.
+const venueMap = "https://www.google.com/maps/search/?api=1&query=30.2490584%2C75.8614627";
 export const invitationConfig = {
   weddingLabel: "Saturday, 28 November 2026",
   invitationLine: "A new home, a new beginning — made beautiful by your blessings and presence.",
   monogram: asset("mittal-crest.svg"),
   houseImage: asset("mittal-house.jpeg"),
-  venue: { name: "Our New Home", address, mapUrl: venueMap },
+  venue: { name: "The Mittal Residence Sangrur", address, mapUrl: venueMap },
   celebrations: [
     {
       id: "havan",

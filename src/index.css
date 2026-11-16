@@ -1095,9 +1095,11 @@ textarea:focus-visible {
 }
 .venue-content h3 {
   color: var(--taupe);
-  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  max-width: 100%;
+  font-size: clamp(2rem, 7vw, 3.5rem);
   font-weight: 400;
   line-height: 1.15;
+  text-wrap: balance;
 }
 .venue-content > p {
   margin: 0.55rem 0 1.5rem;
@@ -2059,19 +2061,54 @@ footer {
 .event-poster .event-details strong {
   font-weight: 700;
 }
+.venue-qr {
+  width: min(100%, 272px);
+  margin: 0.5rem auto 1.5rem;
+}
 .venue-qr-link {
   display: block;
-  width: min(100%, 140px);
-  margin: 0.5rem auto 1.5rem;
-  padding: 6px;
+  width: 100%;
+  padding: 16px;
   border: 1px solid var(--gold-light);
   background: white;
+  color: #111;
+  text-decoration: none;
+  touch-action: manipulation;
   box-shadow: 0 6px 24px rgb(101 84 67 / 0.08);
+}
+.venue-qr-title {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .venue-qr-link img {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 1;
+}
+.venue-qr figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+.venue-map-button {
+  width: min(100%, 320px);
+  min-height: 48px;
+  touch-action: manipulation;
+}
+@media (max-width: 639px) {
+  .venue-section {
+    padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+  }
+  .venue-content {
+    min-width: 0;
+    padding: 2rem 0.5rem;
+  }
 }
 .hero-scroll-highlight {
   display: inline-flex;
