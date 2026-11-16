@@ -1,73 +1,58 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import {
-  Check,
-  Clipboard,
-  MapPin,
-  Menu,
-  Music,
-  Pause,
-  Send,
-  Volume2,
-  VolumeX,
-  X,
-} from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+
+import { CalendarDays, MapPin, Menu, Pause, Phone, Music2, X } from "lucide-react";
+import { motion } from "motion/react";
 import { Celebration, invitationConfig as config } from "./invitationConfig";
 
 const navItems = [
-  ["Our Wedding", "our-wedding"],
+  ["Invitation", "home"],
   ["Celebrations", "celebrations"],
   ["Venue", "venue"],
 ] as const;
 
-
 function Monogram({ className = "" }: { className?: string }) {
   return (
-    <img
-      className={`monogram ${className}`}
-      src={config.monogram}
-      alt="A and A monogram with a botanical sprig"
-    />
+    <img className={`monogram ${className}`} src={config.monogram} alt="Mittal family monogram" />
   );
 }
 
-
-function MusicControl({ canPlay }: { canPlay: boolean }) {
+function MusicControl() {
   const audio = useRef<HTMLAudioElement>(null);
   const userControlled = useRef(false);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const hasMusic = Boolean(config.optional.musicUrl);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const player = audio.current;
-    if (!player || !canPlay || !hasMusic) return;
+    if (!player) return;
     let disposed = false;
-    player.volume = 0.35;
+    player.volume = 0.4;
 
-    const removeListeners = () => {
+    function removeListeners() {
       document.removeEventListener("pointerdown", startOnInteraction, true);
       document.removeEventListener("touchend", startOnInteraction, true);
       document.removeEventListener("keydown", startOnInteraction, true);
       window.removeEventListener("pageshow", tryAutoplay);
-    };
-    const tryAutoplay = () => {
+    }
+    function tryAutoplay() {
       if (disposed || userControlled.current) return;
-      void player.play().then(() => {
-        if (!disposed) removeListeners();
-      }).catch(() => {
-        // If audible autoplay is blocked, retry on the first interaction.
-      });
-    };
-    const startOnInteraction = (event: Event) => {
+      void player!
+        .play()
+        .then(() => {
+          if (!disposed) removeListeners();
+        })
+        .catch(() => {
+          // Audible autoplay can require a user gesture; interaction retries below.
+        });
+    }
+    function startOnInteraction(event: Event) {
       if (userControlled.current) {
         removeListeners();
         return;
       }
-      if (event.target instanceof Element && event.target.closest(".music-controls")) return;
+      if (event.target instanceof Element && event.target.closest(".music-wrap")) return;
       tryAutoplay();
-    };
+    }
 
     document.addEventListener("pointerdown", startOnInteraction, true);
     document.addEventListener("touchend", startOnInteraction, true);
@@ -77,77 +62,78 @@ function MusicControl({ canPlay }: { canPlay: boolean }) {
     return () => {
       disposed = true;
       removeListeners();
+      player.pause();
     };
-  }, [canPlay, hasMusic]);
+  }, []);
 
-  const togglePlay = async () => {
-    if (!audio.current || !canPlay || !hasMusic) return;
+  async function toggle() {
+    const player = audio.current;
+    if (!player) return;
     userControlled.current = true;
-    if (audio.current.paused) {
-      try {
-        await audio.current.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
-    } else {
-      audio.current.pause();
-      setPlaying(false);
+    setError("");
+    if (!player.paused) {
+      player.pause();
+      return;
     }
-  };
+    try {
+      await player.play();
+    } catch {
+      setError("Music could not start. Please tap to try again.");
+    }
+  }
 
   return (
-    <div className="music-controls">
-      {hasMusic && (
-        <audio
-          ref={audio}
-          src={config.optional.musicUrl}
-          autoPlay
-          preload="auto"
-          loop
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
-          onVolumeChange={() => setMuted(Boolean(audio.current?.muted))}
-          onError={() => setPlaying(false)}
-        />
-      )}
+    <div className="music-wrap">
+      <audio
+        ref={audio}
+        src={`${import.meta.env.BASE_URL}assets/krishna-bhajan.mp3`}
+        autoPlay
+        loop
+        preload="auto"
+        onPlay={() => {
+          setPlaying(true);
+          setError("");
+        }}
+        onPause={() => setPlaying(false)}
+        onError={() => {
+          setPlaying(false);
+          setError("Music could not load. Please refresh to try again.");
+        }}
+      />
       <button
         type="button"
-        className="icon-button focus-ring"
-        onClick={togglePlay}
-        disabled={!hasMusic}
-        aria-label={hasMusic ? (playing ? "Pause music" : "Play music") : "Music is not configured"}
+        className={`music-button ${playing ? "is-playing" : ""}`}
+        onClick={toggle}
+        aria-label={playing ? "Pause background music" : "Play background music"}
         aria-pressed={playing}
-        title={playing ? "Pause music" : "Play music"}
+        title="Krishna bhajan background music"
       >
-        {playing ? <Pause /> : <Music />}
+        <span className="music-icon">{playing ? <Pause size={16} /> : <Music2 size={16} />}</span>
+        <span>
+          {playing ? "Pause music" : "Play music"}
+          <small>Krishna bhajan</small>
+        </span>
+        <span className="sound-bars" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
       </button>
-      {hasMusic && (
-        <button
-          type="button"
-          className="icon-button focus-ring"
-          onClick={() => {
-            if (!audio.current) return;
-            audio.current.muted = !muted;
-            setMuted(!muted);
-          }}
-          aria-label={muted ? "Unmute music" : "Mute music"}
-          aria-pressed={muted}
-          title={muted ? "Unmute music" : "Mute music"}
-        >
-          {muted ? <VolumeX /> : <Volume2 />}
-        </button>
+      {error && (
+        <span className="music-error" role="status">
+          {error}
+        </span>
       )}
     </div>
   );
 }
-
 function Navigation() {
   const [open, setOpen] = useState(false);
   return (
     <nav className="site-nav" aria-label="Invitation navigation">
-      <a className="nav-mark focus-ring" href="#our-wedding" aria-label="Home">
-        A <span>&</span> A
+      <a className="nav-mark focus-ring" href="#home" aria-label="Home">
+        M <span>·</span> M
       </a>
       <div className={`nav-links ${open ? "nav-links-open" : ""}`}>
         {navItems.map(([label, id]) => (
@@ -178,10 +164,8 @@ function localEventToDate(value: string) {
 
 function Countdown() {
   const target = useMemo(() => {
-    const wedding = config.celebrations.find((event) => event.id === "wedding");
-    return wedding
-      ? { ...wedding, timestamp: localEventToDate(wedding.start).getTime() }
-      : null;
+    const wedding = config.celebrations.find((event) => event.id === "havan");
+    return wedding ? { ...wedding, timestamp: localEventToDate(wedding.start).getTime() } : null;
   }, []);
   const [remaining, setRemaining] = useState(() =>
     target ? Math.max(0, target.timestamp - Date.now()) : 0,
@@ -197,7 +181,7 @@ function Countdown() {
   }, [target]);
 
   if (!target || remaining === 0)
-    return <p className="countdown-complete">Our wedding day is here.</p>;
+    return <p className="countdown-complete">Our housewarming day is here.</p>;
   const values = [
     ["Days", Math.floor(remaining / 86400000)],
     ["Hours", Math.floor((remaining / 3600000) % 24)],
@@ -206,8 +190,8 @@ function Countdown() {
   ];
   return (
     <div>
-      <p className="countdown-label">Counting down to our wedding day</p>
-      <div className="countdown" aria-label="Countdown to our wedding day">
+      <p className="countdown-label">Counting down to our housewarming day</p>
+      <div className="countdown" aria-label="Countdown to our housewarming day">
         {values.map(([label, value]) => (
           <div key={label}>
             <strong>{String(value).padStart(2, "0")}</strong>
@@ -251,7 +235,7 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
         <div className="event-details">
           <strong>{event.dateLabel}</strong>
           <span>{event.timeLabel}</span>
-          {event.phereTime && <span>Phere: {event.phereTime}</span>}
+
           <span>{event.venue}</span>
         </div>
         <div className="event-actions">
@@ -269,279 +253,77 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
   );
 }
 
-type RSVPData = {
-  name: string;
-  attendance: "yes" | "no";
-  guests: string;
-  celebrations: string[];
-  dietary: string;
-  message: string;
-};
-
-function RSVP() {
-  const [data, setData] = useState<RSVPData>({
-    name: "",
-    attendance: "yes",
-    guests: "1",
-    celebrations: [],
-    dietary: "",
-    message: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [preview, setPreview] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const toggleCelebration = (label: string) => {
-    setData((current) => ({
-      ...current,
-      celebrations: current.celebrations.includes(label)
-        ? current.celebrations.filter((item) => item !== label)
-        : [...current.celebrations, label],
-    }));
-  };
-
-  const buildMessage = () => {
-    const attending = data.attendance === "yes";
+function SaveDate() {
+  function download() {
     const lines = [
-      "RSVP for Amit & Ankita",
-      "",
-      `Name: ${data.name.trim()}`,
-      `Attendance: ${attending ? "Joyfully attending" : "Sending our wishes"}`,
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Mittal Family//Housewarming//EN",
+      "BEGIN:VEVENT",
+      "UID:mittal-housewarming-20261128@invitation.local",
+      "DTSTAMP:20261116T000000Z",
+      "DTSTART:20261128T014500Z",
+      "SUMMARY:Mittal Family House Warming Ceremony",
+      `LOCATION:${config.venue.address.replace(/,/g, "\\,")}`,
+      "DESCRIPTION:Havan 07.15 AM; Paath Shri Sundar Kaand 10.00 AM; Lunch 12.30 PM. All timings IST.",
+      "END:VEVENT",
+      "END:VCALENDAR",
     ];
-    if (attending) {
-      lines.push(
-        `Guests (including me): ${data.guests}`,
-        `Celebrations: ${data.celebrations.join(", ")}`,
-      );
-      if (data.dietary.trim()) lines.push(`Dietary requirements: ${data.dietary.trim()}`);
-    }
-    if (data.message.trim()) lines.push(`Message: ${data.message.trim()}`);
-    return lines.join("\n");
-  };
-
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const nextErrors: Record<string, string> = {};
-    if (!data.name.trim()) nextErrors.name = "Please enter your full name.";
-    if (data.attendance === "yes") {
-      const guests = Number(data.guests);
-      if (!Number.isInteger(guests) || guests < 1)
-        nextErrors.guests = "Please enter at least one guest.";
-      if (!data.celebrations.length)
-        nextErrors.celebrations = "Please choose at least one celebration.";
-    }
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
-    setPreview(buildMessage());
-    setDialogOpen(true);
-  };
-
-  const sendWhatsApp = () => {
-    if (!config.optional.whatsappHostNumber) return;
-    const number = String(config.optional.whatsappHostNumber).replace(/\D/g, "");
-    window.open(
-      `https://wa.me/${number}?text=${encodeURIComponent(preview)}`,
-      "_blank",
-      "noopener,noreferrer",
+    const url = URL.createObjectURL(
+      new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" }),
     );
-  };
-
-  const copyMessage = async () => {
-    await navigator.clipboard.writeText(preview);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
-  };
-
-  const attending = data.attendance === "yes";
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Mittal-Housewarming-28-November-2026.ics";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
   return (
-    <>
-      <form className="rsvp-form" onSubmit={submit} noValidate>
-        <label className="field">
-          <span>
-            Full name <b>*</b>
-          </span>
-          <input
-            value={data.name}
-            onChange={(event) => setData({ ...data, name: event.target.value })}
-            aria-invalid={Boolean(errors.name)}
-            placeholder="Your full name"
-          />
-          {errors.name && <small className="error">{errors.name}</small>}
-        </label>
-        <fieldset>
-          <legend>Will you be joining us?</legend>
-          <div className="choice-grid two">
-            {[
-              ["yes", "Joyfully attending"],
-              ["no", "Sending our wishes"],
-            ].map(([value, label]) => (
-              <label
-                key={value}
-                className={`choice ${data.attendance === value ? "selected" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="attendance"
-                  value={value}
-                  checked={data.attendance === value}
-                  onChange={() =>
-                    setData({
-                      ...data,
-                      attendance: value as "yes" | "no",
-                      ...(value === "no" ? { guests: "1", celebrations: [], dietary: "" } : {}),
-                    })
-                  }
-                />
-                <span>{label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <AnimatePresence initial={false}>
-          {attending && (
-            <motion.div
-              className="attending-fields"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <label className="field">
-                <span>Number of guests, including yourself</span>
-                <input
-                  type="number"
-                  min="1"
-                  inputMode="numeric"
-                  value={data.guests}
-                  onChange={(event) => setData({ ...data, guests: event.target.value })}
-                  aria-invalid={Boolean(errors.guests)}
-                />
-                {errors.guests && <small className="error">{errors.guests}</small>}
-              </label>
-              <fieldset>
-                <legend>Celebrations attending</legend>
-                <div className="choice-grid">
-                  {config.celebrations.map((event) => (
-                    <label
-                      className={`choice ${data.celebrations.includes(event.shortName) ? "selected" : ""}`}
-                      key={event.id}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={data.celebrations.includes(event.shortName)}
-                        onChange={() => toggleCelebration(event.shortName)}
-                      />
-                      <span>{event.shortName}</span>
-                      {data.celebrations.includes(event.shortName) && <Check />}
-                    </label>
-                  ))}
-                </div>
-                {errors.celebrations && <small className="error">{errors.celebrations}</small>}
-              </fieldset>
-              <label className="field">
-                <span>
-                  Dietary requirements <em>Optional</em>
-                </span>
-                <input
-                  value={data.dietary}
-                  onChange={(event) => setData({ ...data, dietary: event.target.value })}
-                  placeholder="Please share any requirements"
-                />
-              </label>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <label className="field">
-          <span>
-            Message for Amit & Ankita <em>Optional</em>
-          </span>
-          <textarea
-            rows={4}
-            value={data.message}
-            onChange={(event) => setData({ ...data, message: event.target.value })}
-            placeholder="Leave a note for the couple"
-          />
-        </label>
-        <button className="button button-submit focus-ring" type="submit">
-          <Send /> Prepare RSVP
-        </button>
-        <p className="form-note">Your message opens in WhatsApp for you to review and send.</p>
-      </form>
-
-      <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="dialog-overlay" />
-          <Dialog.Content className="dialog-content">
-            <Dialog.Close className="dialog-close focus-ring">
-              <X />
-              <span className="sr-only">Close</span>
-            </Dialog.Close>
-            <Dialog.Title>Review your RSVP</Dialog.Title>
-            <Dialog.Description>
-              {config.optional.whatsappHostNumber
-                ? "Review your message, then continue to WhatsApp. You will send it yourself."
-                : "No host number is configured yet. Copy this demo message to share it manually."}
-            </Dialog.Description>
-            <pre>{preview}</pre>
-            {config.optional.whatsappHostNumber ? (
-              <button
-                type="button"
-                className="button button-submit focus-ring"
-                onClick={sendWhatsApp}
-              >
-                <Send /> Continue to WhatsApp
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="button button-submit focus-ring"
-                onClick={copyMessage}
-              >
-                {copied ? <Check /> : <Clipboard />}
-                {copied ? "Copied" : "Copy message"}
-              </button>
-            )}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </>
+    <button className="button button-outline focus-ring save-date-button" onClick={download}>
+      <CalendarDays /> Save the date · 28 November 2026
+    </button>
   );
 }
 
 export default function App() {
-  const parentsPresent =
-    Boolean(config.couple.firstParents) || Boolean(config.couple.secondParents);
-  const optionalDetails = Object.entries({
-    Travel: config.optional.travel,
-    Stay: config.optional.stay,
-    Contact: config.optional.contact,
-  }).filter(([, value]) => Boolean(value));
-
   return (
     <div className="invitation">
       <Navigation />
-      <MusicControl canPlay />
+      <MusicControl />
       <main>
-        <section className="hero" id="our-wedding">
+        <section className="hero housewarming-hero" id="home">
           <div className="paper-grain" />
           <div className="hero-inner">
             <Monogram className="hero-monogram" />
-            <p className="eyebrow">The wedding celebrations of</p>
+            <p className="ganesh-line">॥ श्री गणेशाय नमः ॥</p>
+            <p className="hero-blessings">
+              With the heavenly blessings of
+              <br />
+              <strong>Late Sh. Hari Chand Mittal</strong>
+            </p>
+            <p className="host-name">Smt. Madhu Mittal</p>
+            <p className="hero-invite-line">Cordially invites you to celebrate our</p>
             <h1>
-              {config.couple.first}
-              <span>&</span>
-              {config.couple.second}
+              House Warming
+              <br />
+              Ceremony
             </h1>
-            {parentsPresent && (
-              <div className="parent-lines">
-                {config.couple.firstParents && <p>{config.couple.firstParents}</p>}
-                {config.couple.secondParents && <p>{config.couple.secondParents}</p>}
-              </div>
-            )}
-            <div className="hero-date">{config.weddingLabel}</div>
+            <div className="hero-date">Saturday, 28 November 2026</div>
+            <figure className="house-photo-frame">
+              <img
+                src={config.houseImage}
+                alt="The Mittal family's new home, with ivory arches, palm trees and ornate entrance gates"
+                fetchPriority="high"
+              />
+              <figcaption>Our new home, blessed by your presence.</figcaption>
+            </figure>
           </div>
           <div className="hero-artwork" aria-hidden="true">
-            <img src="/assets/opening-artwork-v1.jpg" alt="" fetchPriority="high" />
+            <img
+              src={`${import.meta.env.BASE_URL}assets/housewarming-opening-v2.png`}
+              alt=""
+              fetchPriority="high"
+            />
           </div>
         </section>
 
@@ -550,37 +332,61 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
-            <span className="script-accent">With joyful hearts</span>
+            <span className="script-accent">A beautiful new beginning</span>
             <p>{config.invitationLine}</p>
+            <span className="presence-line">Awaiting Your Gracious Presence</span>
             <Monogram />
           </motion.div>
         </section>
 
         <section className="countdown-section">
-          <SectionHeading eyebrow="Until we celebrate">Our forever begins in</SectionHeading>
+          <SectionHeading eyebrow="Until we celebrate">
+            Counting down to our new beginning
+          </SectionHeading>
           <Countdown />
+          <SaveDate />
         </section>
 
         <section className="celebrations-section" id="celebrations">
           <Monogram className="celebrations-monogram" />
-          <SectionHeading>A little scroll through our forever</SectionHeading>
+          <SectionHeading eyebrow="Saturday, 28 November 2026">
+            Prayers, blessings & togetherness
+          </SectionHeading>
           <div className="events">
             {config.celebrations.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} />
+              <div className="event-chapter" key={event.id}>
+                <EventCard event={event} index={index} />
+                <figure className="event-filler">
+                  <img src={event.image} alt={event.imageAlt} loading="lazy" />
+                  <figcaption>
+                    {
+                      [
+                        "A sacred flame. A home full of blessings.",
+                        "In devotion, we find our blessings.",
+                        "A table full of love. A family together.",
+                      ][index]
+                    }
+                  </figcaption>
+                </figure>
+              </div>
             ))}
           </div>
         </section>
 
-        <section className="venue-section" id="venue">
+        <section className="venue-section housewarming-venue" id="venue">
           <div className="venue-content">
-            <SectionHeading eyebrow="Where we gather">The venue</SectionHeading>
+            <SectionHeading eyebrow="Where we gather">Our new home</SectionHeading>
             <MapPin className="venue-pin" />
-            <h3>{config.venue.name}</h3>
-            <p>{config.venue.address}</p>
+            <h3>Sangrur</h3>
+            <p>
+              Street Adjoining Karuna Hospital
+              <br />
+              Patiala By Pass Road, Sangrur
+            </p>
             <a
-              className="button button-solid focus-ring"
+              className="button button-outline focus-ring"
               href={config.venue.mapUrl}
               target="_blank"
               rel="noreferrer"
@@ -590,27 +396,71 @@ export default function App() {
           </div>
         </section>
 
-        {optionalDetails.length > 0 && (
-          <section className="optional-section">
-            {optionalDetails.map(([label, value]) => (
-              <div key={label}>
-                <span>{label}</span>
-                <p>{value}</p>
-              </div>
-            ))}
-          </section>
-        )}
-
+        <section className="family-acknowledgements" id="family">
+          <span className="script-accent">Warm Welcome</span>
+          <h2>Priyanka & Shanky Mittal</h2>
+          <div className="botanical-rule">
+            <i />
+            <b>◆</b>
+            <i />
+          </div>
+          <div className="family-names">
+            <span className="eyebrow">RSVP</span>
+            <p>
+              Late Sh. Ved Parkash & Raj Rani Mittal
+              <br />
+              Sourabh Mittal & Babita Mittal
+              <br />
+              Gaurav Mittal & Surbhi Mittal
+            </p>
+          </div>
+          <div className="family-names">
+            <span className="eyebrow">With Best Compliments From</span>
+            <p>
+              Nishi Gupta & Aayush Rai Gupta
+              <br />
+              Ridhi Garg & Rohit Garg
+            </p>
+          </div>
+          <div className="family-names">
+            <span className="script-accent">Family’s Flowers</span>
+            <p>
+              Arnav Mittal, Divam Garg
+              <br />
+              Vrishti, Sumedha, Divyanshi, Vanika & Ashita
+            </p>
+          </div>
+          <div className="family-names">
+            <span className="eyebrow">Contact Details</span>
+            <div className="contact-links">
+              <a href="tel:+919876350255">
+                <Phone />
+                98763-50255
+              </a>
+              <a href="tel:+919888854567">
+                <Phone />
+                98888-54567
+              </a>
+            </div>
+          </div>
+        </section>
         <footer>
           <div className="closing-copy">
             <Monogram />
-            <span>With love,</span>
+            <span>With love & blessings,</span>
             <p className="closing-message">
-              With hearts full of joy and love, the Wadhwani &amp; Bagzai families request the
-              pleasure of your presence as they celebrate the beginning of a beautiful forever.
+              The Mittal family looks forward to welcoming you to our home and sharing this
+              beautiful beginning together.
             </p>
             <div className="closing-rule" aria-hidden="true" />
-            <p>Our celebration is complete with you.</p>
+            <p>
+              Save the Date
+              <br />
+              28 November 2026
+            </p>
+            <a className="logo-download" href={config.monogram} download="Mittal-Family-Logo.svg">
+              Download family logo
+            </a>
           </div>
         </footer>
       </main>

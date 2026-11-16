@@ -871,7 +871,7 @@ textarea:focus-visible {
 .countdown-section {
   background:
     linear-gradient(rgb(246 240 229 / 0.92), rgb(246 240 229 / 0.92)),
-    url("/assets/image-7") center/cover;
+    url("/assets/housewarming-opening-v2.png") center/cover;
 }
 .countdown-label {
   margin: 2.6rem 0 1rem;
@@ -919,8 +919,7 @@ textarea:focus-visible {
 .celebrations-section {
   background:
     radial-gradient(ellipse at 0% 15%, rgb(135 145 123 / 0.18), transparent 55%),
-    radial-gradient(ellipse at 100% 85%, rgb(135 145 123 / 0.14), transparent 55%),
-    var(--paper);
+    radial-gradient(ellipse at 100% 85%, rgb(135 145 123 / 0.14), transparent 55%), var(--paper);
 }
 .celebrations-monogram {
   display: block;
@@ -1510,4 +1509,285 @@ footer p {
 }
 .event-actions .button {
   width: 100%;
+}
+
+/* Housewarming content within the original floral invitation theme. */
+.housewarming-hero {
+  min-height: 100svh;
+  padding: 6.5rem 1.5rem 3rem;
+}
+.housewarming-hero .hero-monogram {
+  width: 75px;
+  height: 88px;
+  margin-bottom: 0.65rem;
+}
+.ganesh-line {
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 1rem;
+}
+.hero-blessings {
+  margin: 0.85rem 0 0.7rem;
+  color: var(--taupe);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+.hero-blessings strong {
+  font-weight: 500;
+}
+.host-name {
+  font-family: var(--font-display);
+  color: var(--taupe);
+  font-size: clamp(1.8rem, 6vw, 2.7rem);
+  line-height: 1.2;
+}
+.hero-invite-line {
+  margin-top: 0.35rem;
+  color: var(--taupe);
+  font-size: 0.75rem;
+}
+.housewarming-hero h1 {
+  display: block;
+  white-space: normal;
+  font-size: clamp(2.8rem, 9vw, 4.5rem);
+  line-height: 0.98;
+  margin-top: 1rem;
+}
+.housewarming-hero .hero-date {
+  margin-top: 1.1rem;
+  padding-block: 0.55rem;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+}
+.house-photo-frame {
+  width: min(100%, 580px);
+  margin-top: 1.5rem;
+  padding: 7px;
+  background: rgb(250 246 238 / 0.9);
+  border: 1px solid var(--gold-light);
+  box-shadow: 0 8px 25px rgb(101 84 67 / 0.12);
+}
+.house-photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.house-photo-frame figcaption {
+  padding: 0.5rem 0.2rem 0.15rem;
+  font-family: var(--font-display);
+  color: var(--taupe);
+  font-style: italic;
+  font-size: 1rem;
+}
+.presence-line {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--gold);
+  margin: -0.5rem 0 1.4rem;
+  font-style: italic;
+}
+.save-date-button {
+  display: flex;
+  width: fit-content;
+  margin: 2rem auto 0;
+}
+.event-chapter {
+  border: 1px solid rgb(184 154 103 / 0.35);
+  overflow: hidden;
+}
+.event-chapter .event-card {
+  border: 0;
+}
+.event-content {
+  max-width: 100%;
+  padding-inline: 14cqi;
+  padding-bottom: 2rem;
+}
+.event-card h3 {
+  max-width: 100%;
+}
+.event-line {
+  max-width: 420px;
+}
+.event-card > img {
+  object-fit: cover;
+  object-position: center top;
+}
+.event-filler {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  background: var(--ivory);
+}
+.event-filler img {
+  display: block;
+  width: 100%;
+  height: clamp(230px, 55vw, 420px);
+  object-fit: cover;
+  object-position: center bottom;
+}
+.event-filler figcaption {
+  padding: 1.2rem 1rem;
+  border-top: 1px solid rgb(184 154 103 / 0.2);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3.8vw, 1.5rem);
+  font-style: italic;
+  color: var(--taupe);
+  background: var(--paper);
+}
+.housewarming-venue {
+  background: var(--ivory);
+}
+.housewarming-venue::before {
+  background-image: url("/assets/housewarming-opening-v2.png");
+  filter: none;
+  opacity: 0.45;
+  transform: none;
+  background-position: center 15%;
+}
+.family-acknowledgements {
+  padding: 4rem 1.5rem;
+  text-align: center;
+  background:
+    linear-gradient(rgb(250 246 238 / 0.88), rgb(250 246 238 / 0.88)),
+    url("/assets/housewarming-opening-v2.png") center top / cover;
+}
+.family-acknowledgements h2 {
+  margin: 0.8rem 0 1.5rem;
+  color: var(--taupe);
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.15;
+}
+.family-acknowledgements .botanical-rule {
+  margin: auto;
+}
+.family-names {
+  margin-top: 2.5rem;
+}
+.family-names p {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3.8vw, 1.5rem);
+  line-height: 1.6;
+  color: var(--taupe);
+  text-wrap: balance;
+}
+.contact-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  margin-top: 1rem;
+}
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--taupe);
+}
+.contact-links svg {
+  width: 16px;
+  color: var(--gold);
+}
+.logo-download {
+  margin-top: 1.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--sage-deep);
+}
+.music-wrap {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 49;
+}
+.music-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px 9px 9px;
+  border: 1px solid var(--gold-light);
+  border-radius: 35px;
+  color: var(--taupe);
+  background: rgb(250 246 238 / 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 20px rgb(101 84 67 / 0.1);
+  font-size: 0.65rem;
+  text-align: left;
+}
+.music-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ivory-deep);
+}
+.music-button small {
+  display: block;
+  color: var(--gold);
+  font-size: 0.5rem;
+}
+.sound-bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 15px;
+}
+.sound-bars i {
+  width: 2px;
+  height: 5px;
+  background: var(--gold);
+}
+.sound-bars i:nth-child(2) {
+  height: 12px;
+}
+.sound-bars i:nth-child(3) {
+  height: 8px;
+}
+.is-playing .sound-bars i {
+  animation: music-bars 1s ease-in-out infinite alternate;
+}
+.is-playing .sound-bars i:nth-child(2n) {
+  animation-delay: -0.5s;
+}
+@keyframes music-bars {
+  to {
+    transform: scaleY(0.4);
+  }
+}
+@media (max-width: 500px) {
+  .housewarming-hero {
+    padding: 5.5rem 1.25rem 2rem;
+  }
+  .housewarming-hero .hero-monogram {
+    width: 55px;
+    height: 65px;
+  }
+  .hero-blessings {
+    font-size: 1rem;
+  }
+  .house-photo-frame {
+    margin-top: 1rem;
+  }
+  .housewarming-hero h1 {
+    font-size: 2.9rem;
+  }
+  .event-content {
+    padding-inline: 11cqi;
+  }
+  .event-details {
+    font-size: 0.75rem;
+  }
+  .event-filler img {
+    height: 240px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-playing .sound-bars i {
+    animation: none;
+  }
 }
