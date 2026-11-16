@@ -237,23 +237,29 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
   return (
     <motion.article
       id={event.id}
-      className={`event-card scene-${event.scene}`}
+      className={`event-card event-chapter scene-${event.scene}`}
       initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, delay: index * 0.08 }}
     >
-      <img src={event.image} alt="" loading="lazy" />
-      <div className="event-wash" />
-      <div className="event-content">
-        <h3>{event.title}</h3>
-        <p className="event-line">{event.supportingLine}</p>
-        <div className="event-details">
-          <strong>{event.dateLabel}</strong>
-          <span>{event.timeLabel}</span>
-
-          <span>{event.venue}</span>
+      <div className="event-poster">
+        <img className="event-artwork" src={event.image} alt={event.imageAlt} loading="lazy" />
+        <div className="event-content">
+          <p className="event-kicker">
+            MITTAL FAMILY · CELEBRATION {String(index + 1).padStart(2, "0")}
+          </p>
+          <h3>{event.title}</h3>
+          <p className="event-line">{event.subtitle}</p>
+          <div className="event-details">
+            <strong>{event.dateLabel}</strong>
+            <span>{event.timeLabel}</span>
+          </div>
         </div>
+      </div>
+      <div className="event-venue-panel">
+        <h4>The Mittal Residence</h4>
+        <p className="event-address">{event.venue}</p>
         <div className="event-actions">
           <a
             className="button button-outline focus-ring"
@@ -264,6 +270,7 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
             <MapPin /> Directions
           </a>
         </div>
+        <p className="event-closing-line">{event.supportingLine}</p>
       </div>
     </motion.article>
   );
@@ -372,21 +379,7 @@ export default function App() {
           </SectionHeading>
           <div className="events">
             {config.celebrations.map((event, index) => (
-              <div className="event-chapter" key={event.id}>
-                <EventCard event={event} index={index} />
-                <figure className="event-filler">
-                  <img src={event.image} alt={event.imageAlt} loading="lazy" />
-                  <figcaption>
-                    {
-                      [
-                        "A sacred flame. A home full of blessings.",
-                        "In devotion, we find our blessings.",
-                        "A table full of love. A family together.",
-                      ][index]
-                    }
-                  </figcaption>
-                </figure>
-              </div>
+              <EventCard key={event.id} event={event} index={index} />
             ))}
           </div>
         </section>

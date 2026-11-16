@@ -2,6 +2,7 @@ export type Celebration = {
   id: "havan" | "sundar-kaand" | "lunch";
   shortName: string;
   title: string;
+  subtitle: string;
   dateLabel: string;
   timeLabel: string;
   venue: string;
@@ -26,9 +27,10 @@ export const invitationConfig = {
     {
       id: "havan",
       shortName: "Havan",
-      title: "Havan – A Sacred Beginning",
+      title: "Havan",
+      subtitle: "A Sacred Beginning",
       dateLabel: "Saturday, 28 November 2026",
-      timeLabel: "Havan at 07.15 AM",
+      timeLabel: "07.15 AM",
       venue: address,
       supportingLine:
         "With the sacred flame, we welcome peace, prosperity and divine blessings into our new home.",
@@ -43,8 +45,9 @@ export const invitationConfig = {
       id: "sundar-kaand",
       shortName: "Paath Shri Sundar Kaand",
       title: "Paath Shri Sundar Kaand",
+      subtitle: "An Offering of Devotion",
       dateLabel: "Saturday, 28 November 2026",
-      timeLabel: "Paath at 10.00 AM",
+      timeLabel: "10.00 AM",
       venue: address,
       supportingLine:
         "Together in devotion, we seek the blessings of Lord Hanuman for a home filled with strength, harmony and happiness.",
@@ -58,7 +61,8 @@ export const invitationConfig = {
     {
       id: "lunch",
       shortName: "Lunch",
-      title: "Lunch – A Feast of Togetherness",
+      title: "Lunch",
+      subtitle: "A Feast of Togetherness",
       dateLabel: "Saturday, 28 November 2026",
       timeLabel: "Followed by lunch at 12.30 PM",
       venue: address,
