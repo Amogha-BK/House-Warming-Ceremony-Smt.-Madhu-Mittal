@@ -955,9 +955,10 @@ textarea:focus-visible {
 .event-card > img {
   position: absolute;
   z-index: -3;
-  inset: 0;
+  inset: 0 0 auto;
   width: 100%;
-  height: 100%;
+  /* Only the floral top decor belongs behind text. The ritual scene appears once below. */
+  height: clamp(100px, 25cqi, 180px);
   object-fit: cover;
   object-position: center top;
 }
@@ -965,12 +966,12 @@ textarea:focus-visible {
   position: absolute;
   z-index: -2;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgb(250 246 238 / 0.66), transparent 75%);
+  background: linear-gradient(180deg, transparent 50px, var(--ivory) 180px);
 }
 .event-content {
   width: 100%;
   max-width: 560px;
-  padding: 28cqi 7cqi 0.75rem;
+  padding: clamp(120px, 28cqi, 200px) 7cqi 0.75rem;
   text-align: center;
 }
 .event-card h3 {
@@ -1700,8 +1701,9 @@ footer p {
 }
 .music-wrap {
   position: fixed;
-  bottom: 18px;
-  right: 18px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  right: max(14px, env(safe-area-inset-right));
+  max-width: calc(100vw - 28px);
   z-index: 49;
 }
 .music-button {
@@ -1717,6 +1719,8 @@ footer p {
   box-shadow: 0 5px 20px rgb(101 84 67 / 0.1);
   font-size: 0.65rem;
   text-align: left;
+  min-height: 48px;
+  touch-action: manipulation;
 }
 .music-icon {
   display: grid;
@@ -1780,7 +1784,7 @@ footer p {
     padding-inline: 11cqi;
   }
   .event-details {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
   .event-filler img {
     height: 240px;
@@ -1789,5 +1793,119 @@ footer p {
 @media (prefers-reduced-motion: reduce) {
   .is-playing .sound-bars i {
     animation: none;
+  }
+}
+
+/* Phone sizing and safe areas for Android Chrome and iOS Safari. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+.hero-inner,
+.event-content,
+.event-chapter {
+  min-width: 0;
+}
+.house-photo-frame img {
+  aspect-ratio: 1260 / 583;
+  object-fit: contain;
+}
+.site-nav {
+  height: calc(64px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+}
+.nav-links {
+  top: calc(64px + env(safe-area-inset-top));
+}
+.nav-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+.event-chapter {
+  scroll-margin-top: calc(80px + env(safe-area-inset-top));
+}
+.event-details {
+  overflow-wrap: anywhere;
+}
+.event-actions .button {
+  background: var(--paper);
+  min-height: 48px;
+}
+.music-error {
+  display: block;
+  max-width: 230px;
+  margin-top: 8px;
+  padding: 10px;
+  color: var(--taupe);
+  background: var(--paper);
+  border: 1px solid var(--gold-light);
+  font-size: 0.75rem;
+}
+footer {
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+}
+@media (max-width: 639px) {
+  .housewarming-hero {
+    padding-top: calc(5.5rem + env(safe-area-inset-top));
+  }
+  .family-section,
+  .countdown-section,
+  .celebrations-section {
+    padding: 3.5rem 1rem;
+  }
+  .celebrations-section {
+    padding-bottom: 0;
+  }
+  .events {
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  .event-content {
+    padding-inline: 8cqi;
+    padding-bottom: 1.5rem;
+  }
+  .event-card h3 {
+    font-size: clamp(1.9rem, 8cqi, 2.8rem);
+  }
+  .event-line {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  .event-details {
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+  .event-filler img {
+    height: auto;
+    aspect-ratio: 1.3;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+  .event-filler figcaption {
+    padding: 1rem;
+  }
+  .music-button {
+    font-size: 0.75rem;
+  }
+  .music-button small {
+    font-size: 0.625rem;
+  }
+  .contact-links a {
+    min-height: 44px;
+  }
+  .save-date-button {
+    max-width: 100%;
+    font-size: 0.6875rem;
+  }
+}
+@media (max-width: 359px) {
+  .housewarming-hero h1 {
+    font-size: 2.55rem;
+  }
+  .family-acknowledgements {
+    padding-inline: 1rem;
   }
 }

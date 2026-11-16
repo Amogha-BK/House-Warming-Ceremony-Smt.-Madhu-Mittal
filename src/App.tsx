@@ -20,6 +20,7 @@ function MusicControl() {
   const audio = useRef<HTMLAudioElement>(null);
   const userControlled = useRef(false);
   const [playing, setPlaying] = useState(false);
+  const [awaitingTap, setAwaitingTap] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -28,26 +29,34 @@ function MusicControl() {
     let disposed = false;
     player.volume = 0.4;
 
-    function removeListeners() {
+    function removeGestureListeners() {
       document.removeEventListener("pointerdown", startOnInteraction, true);
       document.removeEventListener("touchend", startOnInteraction, true);
+      document.removeEventListener("click", startOnInteraction, true);
       document.removeEventListener("keydown", startOnInteraction, true);
-      window.removeEventListener("pageshow", tryAutoplay);
     }
     function tryAutoplay() {
       if (disposed || userControlled.current) return;
       void player!
         .play()
         .then(() => {
-          if (!disposed) removeListeners();
+          if (!disposed) {
+            setAwaitingTap(false);
+            removeGestureListeners();
+          }
         })
-        .catch(() => {
-          // Audible autoplay can require a user gesture; interaction retries below.
+        .catch((reason: unknown) => {
+          if (!disposed && reason instanceof DOMException && reason.name === "NotAllowedError") {
+            setAwaitingTap(true);
+          }
         });
+    }
+    function onVisible() {
+      if (document.visibilityState === "visible") tryAutoplay();
     }
     function startOnInteraction(event: Event) {
       if (userControlled.current) {
-        removeListeners();
+        removeGestureListeners();
         return;
       }
       if (event.target instanceof Element && event.target.closest(".music-wrap")) return;
@@ -56,12 +65,18 @@ function MusicControl() {
 
     document.addEventListener("pointerdown", startOnInteraction, true);
     document.addEventListener("touchend", startOnInteraction, true);
+    document.addEventListener("click", startOnInteraction, true);
     document.addEventListener("keydown", startOnInteraction, true);
+    document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("pageshow", tryAutoplay);
+    player.addEventListener("canplay", tryAutoplay);
     tryAutoplay();
     return () => {
       disposed = true;
-      removeListeners();
+      removeGestureListeners();
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", tryAutoplay);
+      player.removeEventListener("canplay", tryAutoplay);
       player.pause();
     };
   }, []);
@@ -90,8 +105,9 @@ function MusicControl() {
         autoPlay
         loop
         preload="auto"
-        onPlay={() => {
+        onPlaying={() => {
           setPlaying(true);
+          setAwaitingTap(false);
           setError("");
         }}
         onPause={() => setPlaying(false)}
@@ -110,7 +126,7 @@ function MusicControl() {
       >
         <span className="music-icon">{playing ? <Pause size={16} /> : <Music2 size={16} />}</span>
         <span>
-          {playing ? "Pause music" : "Play music"}
+          {playing ? "Pause music" : awaitingTap ? "Tap anywhere for music" : "Play music"}
           <small>Krishna bhajan</small>
         </span>
         <span className="sound-bars" aria-hidden="true">
