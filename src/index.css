@@ -1681,12 +1681,13 @@ footer p {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
   text-decoration: none;
   color: var(--taupe);
 }
 .contact-links svg {
-  width: 16px;
+  width: 20px;
+  height: 20px;
   color: var(--gold);
 }
 .logo-download {
@@ -1963,6 +1964,21 @@ footer {
   margin: 4cqi 0 0;
   font-size: clamp(1.7rem, 8.5cqi, 4rem);
   line-height: 1.08;
+}
+.event-followed-by {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 4cqi, 1.4rem);
+  font-style: italic;
+  line-height: 1.3;
+}
+.event-followed-by + h3 {
+  margin-top: 1cqi;
+}
+.underlined-heading {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 1px;
 }
 .event-poster .event-line {
   margin: 3cqi auto 0;

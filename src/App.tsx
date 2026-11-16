@@ -242,6 +242,7 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
         <img className="event-artwork" src={event.image} alt={event.imageAlt} loading="lazy" />
         <div className="event-content">
           <Monogram className="event-monogram" />
+          {event.id === "lunch" && <p className="event-followed-by">Followed by</p>}
           <h3>{event.title}</h3>
           <p className="event-line">{event.subtitle}</p>
           <div className="event-details">
@@ -253,17 +254,6 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
       </div>
       <div className="event-venue-panel">
         <h4>The Mittal Residence</h4>
-        <p className="event-address">{event.venue}</p>
-        <div className="event-actions">
-          <a
-            className="button button-outline focus-ring"
-            href={event.mapUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <MapPin /> Directions
-          </a>
-        </div>
         <p className="event-closing-line">{event.supportingLine}</p>
       </div>
     </motion.article>
@@ -429,7 +419,7 @@ export default function App() {
             <i />
           </div>
           <div className="family-names">
-            <span className="eyebrow">RSVP</span>
+            <span className="eyebrow underlined-heading">RSVP</span>
             <p>
               Late Sh. Ved Parkash & Raj Rani Mittal
               <br />
@@ -439,7 +429,7 @@ export default function App() {
             </p>
           </div>
           <div className="family-names">
-            <span className="eyebrow">With Best Compliments From</span>
+            <span className="eyebrow underlined-heading">With Best Compliments From</span>
             <p>
               Nishi Gupta & Aayush Rai Gupta
               <br />
@@ -455,7 +445,7 @@ export default function App() {
             </p>
           </div>
           <div className="family-names">
-            <span className="eyebrow">Contact Details</span>
+            <span className="eyebrow underlined-heading">Contact Details</span>
             <div className="contact-links">
               <a href="tel:+919876350255">
                 <Phone />
@@ -482,9 +472,6 @@ export default function App() {
               <br />
               28 November 2026
             </p>
-            <a className="logo-download" href={config.monogram} download="Mittal-Family-Logo.svg">
-              Download family logo
-            </a>
           </div>
         </footer>
       </main>
