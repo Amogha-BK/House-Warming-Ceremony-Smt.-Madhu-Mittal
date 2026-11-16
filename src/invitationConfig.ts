@@ -16,7 +16,7 @@ export type Celebration = {
 
 const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}`;
 const address = "Street Adjoining Karuna Hospital, Patiala By Pass Road, Sangrur";
-const venueMap = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+const venueMap = "https://maps.app.goo.gl/tSm1f48DQWFfHPrS7?g_st=aw";
 export const invitationConfig = {
   weddingLabel: "Saturday, 28 November 2026",
   invitationLine: "A new home, a new beginning — made beautiful by your blessings and presence.",

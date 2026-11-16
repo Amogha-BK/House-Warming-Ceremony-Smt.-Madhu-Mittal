@@ -395,6 +395,21 @@ export default function App() {
               Patiala By Pass Road, Sangrur
             </p>
             <a
+              className="venue-qr-link focus-ring"
+              href={config.venue.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open the house location in Google Maps, or scan the location QR code"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}assets/house-location-qr.jpeg`}
+                alt="Scan for location: Google Maps QR code for Military Cantonment, Sangrur. Point your phone camera at the QR code."
+                width={1200}
+                height={1450}
+                loading="lazy"
+              />
+            </a>
+            <a
               className="button button-outline focus-ring"
               href={config.venue.mapUrl}
               target="_blank"

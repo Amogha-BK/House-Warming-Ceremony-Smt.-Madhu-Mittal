@@ -2043,6 +2043,20 @@ footer {
 .event-poster .event-details strong {
   font-weight: 700;
 }
+.venue-qr-link {
+  display: block;
+  width: min(100%, 140px);
+  margin: 0.5rem auto 1.5rem;
+  padding: 6px;
+  border: 1px solid var(--gold-light);
+  background: white;
+  box-shadow: 0 6px 24px rgb(101 84 67 / 0.08);
+}
+.venue-qr-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 .hero-scroll-highlight {
   display: inline-flex;
   align-items: center;
