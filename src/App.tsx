@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { CalendarDays, MapPin, Menu, Pause, Phone, Music2, X } from "lucide-react";
+import { ArrowDown, CalendarDays, MapPin, Menu, Pause, Phone, Music2, X } from "lucide-react";
 import { motion } from "motion/react";
 import { Celebration, invitationConfig as config } from "./invitationConfig";
 
@@ -246,14 +246,13 @@ function EventCard({ event, index }: { event: Celebration; index: number }) {
       <div className="event-poster">
         <img className="event-artwork" src={event.image} alt={event.imageAlt} loading="lazy" />
         <div className="event-content">
-          <p className="event-kicker">
-            MITTAL FAMILY · CELEBRATION {String(index + 1).padStart(2, "0")}
-          </p>
+          <Monogram className="event-monogram" />
           <h3>{event.title}</h3>
           <p className="event-line">{event.subtitle}</p>
           <div className="event-details">
-            <strong>{event.dateLabel}</strong>
-            <span>{event.timeLabel}</span>
+            <span>
+              At <strong>{event.timeLabel}</strong>
+            </span>
           </div>
         </div>
       </div>
@@ -340,6 +339,12 @@ export default function App() {
               />
               <figcaption>Our new home, blessed by your presence.</figcaption>
             </figure>
+            <a className="hero-scroll-highlight focus-ring" href="#celebrations">
+              <span>
+                Scroll down<strong>Explore the celebrations</strong>
+              </span>
+              <ArrowDown aria-hidden="true" />
+            </a>
           </div>
           <div className="hero-artwork" aria-hidden="true">
             <img

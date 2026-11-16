@@ -64,7 +64,7 @@ export const invitationConfig = {
       title: "Lunch",
       subtitle: "A Feast of Togetherness",
       dateLabel: "Saturday, 28 November 2026",
-      timeLabel: "Followed by lunch at 12.30 PM",
+      timeLabel: "12.30 PM",
       venue: address,
       supportingLine:
         "After the prayers, join us for a lovingly hosted lunch and the joy of being together.",
