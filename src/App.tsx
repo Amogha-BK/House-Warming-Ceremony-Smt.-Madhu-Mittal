@@ -20,7 +20,6 @@ function MusicControl() {
   const audio = useRef<HTMLAudioElement>(null);
   const userControlled = useRef(false);
   const [playing, setPlaying] = useState(false);
-  const [awaitingTap, setAwaitingTap] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -41,14 +40,11 @@ function MusicControl() {
         .play()
         .then(() => {
           if (!disposed) {
-            setAwaitingTap(false);
             removeGestureListeners();
           }
         })
-        .catch((reason: unknown) => {
-          if (!disposed && reason instanceof DOMException && reason.name === "NotAllowedError") {
-            setAwaitingTap(true);
-          }
+        .catch(() => {
+          // Keep interaction listeners available when the browser blocks audible autoplay.
         });
     }
     function onVisible() {
@@ -107,7 +103,6 @@ function MusicControl() {
         preload="auto"
         onPlaying={() => {
           setPlaying(true);
-          setAwaitingTap(false);
           setError("");
         }}
         onPause={() => setPlaying(false)}
@@ -126,7 +121,7 @@ function MusicControl() {
       >
         <span className="music-icon">{playing ? <Pause size={16} /> : <Music2 size={16} />}</span>
         <span>
-          {playing ? "Pause music" : awaitingTap ? "Tap anywhere for music" : "Play music"}
+          {playing ? "Pause music" : "Background music"}
           <small>Krishna bhajan</small>
         </span>
         <span className="sound-bars" aria-hidden="true">
